@@ -139,6 +139,78 @@
   <section id="gallery" aria-labelledby="h-gal">
     <h2 id="h-gal">Steve’s Art Gallery (caricatures) 🎨</h2>
     <div class="stickers">
+      <figure>
+  <pre role="img" aria-label="Bottle labeled Sweet Berry Wine with accessible label and description"
+       style="font:13px/12px ui-monospace,Menlo,Consolas,monospace;color:#ff86d4;background:#1a0920;padding:.6rem;border-radius:8px;overflow:auto;">
+      ___
+     /___\      SWEET
+     |🍇 |      BERRY
+     |___|      WINE
+      | |     ─────────────
+      | |     label: “Sweet Berry Wine”
+     /___\    desc : “Fruity, chaotic, for your health.”
+     (___)    button: [ Add to cart ] — not “Thing #12”
+  </pre>
+  <figcaption>“Label & description so screen readers can cheers too.”</figcaption>
+</figure>
+
+      <figure>
+  <pre role="img" aria-label="Angry form yelling about errors with a big exclamation bubble"
+       style="font:13px/12px ui-monospace,Menlo,Consolas,monospace;color:#ff9de6;background:#1a0b1f;padding:.6rem;border-radius:8px;overflow:auto;">
+   ┌──────────────────────────────┐
+   │   SIGN UP (no clowning)      │
+   │   name:  [__________]        │  ← required, dingus
+   │   email: [__________]        │  ← not “beans@beans”
+   │   pass:  [__________] 👁     │  ← show password helps
+   └──────────────────────────────┘
+        \  (ಠ_ಠ)  /
+         \  |||  /     ❗ ERROR PARADE:
+          \ ||| /      • Name is required, ya turkey.
+           \|||/       • Email looks busted like a soup can.
+            \|/        • Password needs more spice (length).
+             V
+     fix the dang fields and press the good button
+  </pre>
+  <figcaption>“Salty validator: helpful, a little roasty.”</figcaption>
+</figure>
+<figure>
+  <pre role="img" aria-label="Form fields with friendly error tooltips that point at inputs"
+       style="font:13px/12px ui-monospace,Menlo,Consolas,monospace;color:#ffd45e;background:#131329;padding:.6rem;border-radius:8px;overflow:auto;">
+  name  [______]  ← “gimme at least 2 letters, chief”
+  email [______]  ← “needs @ and a dot, like nature intended”
+  code  [__ __]   ← “paste welcomed; no riddles”
+        ^ tooltips sit RIGHT HERE ^
+  (clear labels + inline help = fewer tears)
+  </pre>
+  <figcaption>“Tooltip gremlin that actually helps.”</figcaption>
+</figure>
+<figure>
+  <pre role="img" aria-label="Giant sticky header monster stomping on the focused element"
+       style="font:13px/12px ui-monospace,Menlo,Consolas,monospace;color:#7ef2c4;background:#08131e;padding:.6rem;border-radius:8px;overflow:auto;">
+            ____  NAVZILLA  ____
+           /####################\     RRR!
+          /#  STICKY HEADER   ##\            [Focused Button]
+         /########################\     ────────╳────────────  ← completely obscured
+        (########  😾  ###########)   DON'T DO THIS.
+         \########################/
+           \####################/        ✅ DO THIS INSTEAD:
+                                        push content down or scroll-into-view
+                                        so focus target stays visible (2.4.11)
+  </pre>
+  <figcaption>“Navzilla: don’t let sticky junk hide focus.”</figcaption>
+</figure>
+<figure>
+  <pre role="img" aria-label="Focus ring forcefield pushing the sticky header back"
+       style="font:13px/12px ui-monospace,Menlo,Consolas,monospace;color:#9ae6ff;background:#0b1120;padding:.6rem;border-radius:8px;overflow:auto;">
+   [ Sticky Header ]┐
+                     │  ← pushes down on focus
+   ==================┘
+   ▶  [  BUTTON  ]  ◀     ✨ forcefield (scrollMarginTop, offsets, CSS vars)
+   ==================
+   focus stays visible, kaiju goes home
+  </pre>
+  <figcaption>“Focus ring forcefield (be a hero).”</figcaption>
+</figure>
 
       <figure>
         <img width="360" height="240" alt="Caricature of Steve Brule: giant square glasses, wild frizz hair, tiny tie, watercolor blotches."
@@ -689,3 +761,4 @@
 </script>
 </body>
 </html>
+
