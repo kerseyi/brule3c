@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>WCAG 2.2 — Dingus Edition 💨 (A + AA + Guestbook + Toot Intensity)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="WCAG 2.2 explained by Accessibility Steve — GeoCities vibes, click/disclosure farts, caricature Brule doodles, and a glorious guestbook." />
+<style>
+  :root{ --ink:#fff; --bg:#000018; --card:#101024; --muted:#c7d2fe; --focus:#00ffd5; --pop:#ffd45e; --link:#9ae6ff; }
+  html,body{margin:0;color:var(--ink);background:var(--bg);font:16px/1.6 system-ui,"Comic Sans MS","Comic Neue",Arial,sans-serif}
+  a{color:var(--link)} a:focus,button:focus,input:focus,summary:focus,textarea:focus,select:focus{outline:3px solid var(--focus);outline-offset:3px}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 1rem}
+  .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;background:#000;padding:.5rem .75rem;border-radius:.5rem;z-index:999}
+  body{background-image:url('data:image/svg+xml;utf8,\
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">\
+      <rect width="100%" height="100%" fill="%23000018"/>\
+      <circle cx="10" cy="10" r="1.5" fill="%23fff"/>\
+      <circle cx="60" cy="20" r="1" fill="%23aee"/>\
+      <circle cx="30" cy="50" r="1.2" fill="%23ffd45e"/>\
+      <circle cx="75" cy="70" r="1" fill="%237ef2c4"/>\
+      <circle cx="20" cy="75" r="1" fill="%23fff"/>\
+    </svg>'); background-size:80px 80px; }
+  header{position:relative;border-bottom:3px ridge #ff00ff;background:
+    linear-gradient(180deg,rgba(255,0,255,.15),rgba(0,0,0,0) 40%),
+    radial-gradient(50% 60% at 50% 0%,rgba(126,242,196,.15),transparent 60%);
+    padding:1.2rem 0 1rem;}
+  .topbar{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:.6rem}
+  .logo .badge{background:linear-gradient(90deg,#ffd45e,#7ef2c4);color:#111;padding:.25rem .6rem;border-radius:999px;font-weight:800}
+  h1{margin:.2rem 0 0;font-size:clamp(2rem,5vw,3.2rem);text-shadow:0 0 8px #ff66ff}
+  nav{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(180deg,#1a2a4a,#0f1a33);
+       border:2px outset #7ef2c4;color:var(--ink);text-decoration:none;padding:.5rem .7rem;border-radius:.5rem;min-height:44px}
+  .controls{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.5rem}
+  .toggle{display:inline-flex;align-items:center;gap:.45rem;background:#111b2f;border:2px inset #9ae6ff;padding:.35rem .6rem;border-radius:.5rem}
+  .hint{color:var(--muted);font-size:.95rem}
+  .cloud{position:absolute;right:.5rem;bottom:-1rem;font-size:4rem;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25))}
+  main{padding:1rem 0 3rem}
+  .grid{display:grid;grid-template-columns:1fr;gap:1rem} @media(min-width:960px){.grid{grid-template-columns:repeat(2,1fr)}}
+  section{background:var(--card);border:3px groove #ffd45e;border-radius:10px;padding:1rem}
+  section h2{display:flex;gap:.5rem;align-items:center;margin:.2rem 0 1rem}
+  .lvl{font-weight:900;color:#111;background:#ffd45e;padding:.1rem .5rem;border-radius:.4rem}
+  .lvl.aa{background:#7ec9ff}
+  ul.sc{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+  li.sc-item{background:#0d0f2a;border:2px outset #7ef2c4;border-radius:.6rem}
+  .hdr{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .8rem}
+  .code{font-family:ui-monospace,Menlo,Consolas,monospace;color:#7ef2c4;background:#04141a;padding:.1rem .35rem;border-radius:.3rem}
+  .explain{padding:.6rem .8rem;color:var(--muted)}
+  .foot{margin-top:.7rem;color:var(--muted);font-size:.92rem}
+  details summary{cursor:pointer;list-style:none} details summary::-webkit-details-marker{display:none}
+  .marq{margin:.5rem 0;border:3px ridge #ff9de6;background:#1b0030;padding:.3rem}
+  marquee{color:#ffd45e;font-weight:900;text-shadow:0 0 6px #ff00ea}
+  .sparkle{animation:blink 1s steps(1,end) infinite} @keyframes blink{50%{opacity:.2}}
+  .spinning{display:inline-block;animation:spin 4s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
+  .rainbow{background:linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px #ff00ea)}
+  .stickers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem;margin:1rem 0}
+  figure{margin:0;background:#0e0020;border:3px double #9ae6ff;border-radius:8px;padding:.5rem}
+  figcaption{color:#ffecb3;font-size:.9rem;margin-top:.3rem}
+  .counter{display:inline-block;background:#111;border:2px inset #666;padding:.2rem .4rem;font-family:monospace}
+  .under{margin-top:1rem}
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .calm *{animation:none!important;transition:none!important} .calm marquee{display:none}
+  /* Guestbook */
+  .guestbook{background:#0b0722;border:3px ridge #7ec9ff}
+  .gb-form{display:grid;gap:.6rem}
+  .gb-row{display:grid;gap:.4rem}
+  .gb-row.inline{grid-template-columns:1fr 1fr;gap:.6rem}
+  .gb-row label{font-weight:700}
+  .gb-row input[type="text"], .gb-row textarea, .gb-row select{
+    background:#0e1430;color:var(--ink);border:2px inset #6ac1ff;border-radius:.5rem;padding:.5rem;min-height:44px
+  }
+  .gb-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+  .gb-entries{display:grid;gap:.6rem;margin-top:1rem}
+  .gb-card{background:#0d0f2a;border:2px outset #7ef2c4;border-radius:.6rem;padding:.6rem}
+  .gb-meta{color:#b7c7ff;font-size:.9rem;margin-bottom:.35rem;display:flex;gap:.5rem;flex-wrap:wrap}
+  .stars{color:#ffd45e}
+  .muter{opacity:.8}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to meat &amp; potatoes</a>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="logo">
+        <span class="badge" aria-hidden="true">Brule’s Rules</span>
+        <h1><span class="rainbow">WCAG 2.2 — Dingus Edition</span> <span class="spinning" aria-hidden="true">💨</span></h1>
+      </div>
+      <img alt="Animated construction cone" width="64" height="64"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' rx='10' ry='10' fill='%23110'/> <path d='M12 54h40l-12-34H24z' fill='%23ff7f50'/><g fill='%23fff'><rect x='26' y='28' width='12' height='4'/><rect x='24' y='36' width='16' height='4'/><rect x='22' y='44' width='20' height='4'/></g></svg>">
+    </div>
+
+    <div class="marq" role="region" aria-label="Nostalgic ticker">
+      <marquee behavior="scroll" scrollamount="8" aria-hidden="true">
+        💿 WELCOME TO STEVIE’S STINKY ACCESSIBILITY PALACE 💿 — SIGN THE GUESTBOOK OR FOREVER HOLD YOUR TOOTS — 💿
+      </marquee>
+      <p class="sr-only">Scrolling banner of goofy welcome text.</p>
+    </div>
+
+    <nav aria-label="Page">
+      <a href="#level-a" class="btn">Level A</a>
+      <a href="#level-aa" class="btn">Level AA</a>
+      <a href="#gallery" class="btn">Steve’s Art Gallery</a>
+      <a href="#guestbook" class="btn">Guestbook ✍️</a>
+      <a href="#sources" class="btn">Sources 📚</a>
+    </nav>
+
+    <div class="controls" role="group" aria-label="Page controls">
+      <label class="toggle"><input id="goof" type="checkbox" /> <span>Goofy mode <span aria-hidden="true">🪣💨</span></span></label>
+      <label class="toggle"><input id="calm" type="checkbox" /> <span>Reduce GeoCities Chaos (accessibility mode)</span></label>
+
+      <!-- CLICK/DISCLOSURE TOOT + INTENSITY -->
+      <div class="toggle" aria-label="Toot controls">
+        <label><input id="tootOnClick" type="checkbox" /> <strong>Toot on Click</strong> (links &amp; buttons)</label>
+        <label><input id="tootOnDisclosure" type="checkbox" /> <strong>Toot on Disclosures</strong> (open/close)</label>
+        <button class="btn" id="fartPlay" type="button">▶️ Test toot</button>
+        <button class="btn" id="fartStop" type="button">⛔ Stop</button>
+        <label class="sr-only" for="tootVolume">Toot volume</label>
+        <input id="tootVolume" type="range" min="0" max="1" step="0.05" value="0.6" aria-label="Toot volume">
+        <label class="sr-only" for="tootIntensity">Toot intensity</label>
+        <input id="tootIntensity" type="range" min="1" max="3" step="1" value="2" aria-label="Toot intensity (1 Mild, 3 Chili Night)">
+        <span class="hint" id="intensityLabel">Intensity: Medium 🌶️</span>
+        <span class="hint" id="fartStatus" role="status" aria-live="polite">Toot modes off.</span>
+      </div>
+    </div>
+    <div class="cloud" aria-hidden="true"><span class="sparkle">✨</span></div>
+  </div>
+</header>
+
+<!-- AUDIO BANK -->
+<audio id="sfx1" preload="auto"><source src="https://www.myinstants.com/media/sounds/fart-meme-sound.mp3" type="audio/mpeg"></audio>
+<audio id="sfx2" preload="auto"><source src="https://www.myinstants.com/media/sounds/fart-with-extra-reverb.mp3" type="audio/mpeg"></audio>
+<audio id="sfx3" preload="auto"><source src="https://www.myinstants.com/media/sounds/fart_2.mp3" type="audio/mpeg"></audio>
+
+<main id="main" class="wrap" tabindex="-1">
+
+  <!-- CARICATURE STEVE BRULE DRAWINGS -->
+  <section id="gallery" aria-labelledby="h-gal">
+    <h2 id="h-gal">Steve’s Art Gallery (caricatures) 🎨</h2>
+    <div class="stickers">
+
+      <figure>
+        <img width="360" height="240" alt="Caricature of Steve Brule: giant square glasses, wild frizz hair, tiny tie, watercolor blotches."
+             src="data:image/svg+xml;utf8,
+             <svg xmlns='http://www.w3.org/2000/svg' width='360' height='240'>
+               <defs><linearGradient id='wash' x1='0' x2='1'><stop offset='0' stop-color='%23ffd5a6'/><stop offset='1' stop-color='%23ffe9f0'/></linearGradient></defs>
+               <rect width='100%' height='100%' fill='%23210c2b'/>
+               <ellipse cx='130' cy='120' rx='65' ry='60' fill='url(%23wash)' opacity='.8'/>
+               <path d='M55,80 q75,-60 150,0' stroke='%23000' stroke-width='5' fill='none' stroke-linecap='round'/>
+               <rect x='90' y='105' width='48' height='30' rx='4' fill='none' stroke='%23000' stroke-width='5'/>
+               <rect x='142' y='105' width='48' height='30' rx='4' fill='none' stroke='%23000' stroke-width='5'/>
+               <rect x='138' y='115' width='6' height='8' fill='%23000'/>
+               <path d='M105 140 q20 15 40 0' stroke='%23000' stroke-width='5' fill='none'/>
+               <rect x='118' y='170' width='24' height='26' fill='%23666'/>
+               <polygon points='130,196 120,216 140,216' fill='%23ff6aa6'/>
+               <text x='250' y='200' fill='%23ffd45e' font-size='18' font-family='serif'>Check it out</text>
+             </svg>">
+        <figcaption>“Glasses so big you can see the future.”</figcaption>
+      </figure>
+
+      <figure>
+        <img width="360" height="240" alt="Cubist caricature Steve Brule: blocky jaw, neon blocks for glasses, goofy grin."
+             src="data:image/svg+xml;utf8,
+             <svg xmlns='http://www.w3.org/2000/svg' width='360' height='240'>
+               <rect width='100%' height='100%' fill='%2300162a'/>
+               <rect x='70' y='60' width='130' height='110' fill='%23ff6aa6'/>
+               <rect x='90' y='75' width='40' height='28' fill='%23fff'/>
+               <rect x='138' y='75' width='40' height='28' fill='%23fff'/>
+               <rect x='130' y='105' width='10' height='4' fill='%23000'/>
+               <path d='M95,135 q35,20 80,0' stroke='%23000' stroke-width='6' fill='none'/>
+               <text x='250' y='185' fill='%237ef2c4' font-size='16'>For your health</text>
+             </svg>">
+        <figcaption>“Abstract Brule, neon dreams.”</figcaption>
+      </figure>
+
+      <figure>
+        <img width="360" height="240" alt="Minimal profile caricature: curly hair swirl, heavy glasses outline, pastel gradient."
+             src="data:image/svg+xml;utf8,
+             <svg xmlns='http://www.w3.org/2000/svg' width='360' height='240'>
+               <defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='%237ef2c4'/><stop offset='1' stop-color='%239ae6ff'/></linearGradient></defs>
+               <rect width='100%' height='100%' fill='url(%23g)'/>
+               <path d='M100,170 q-12,-45 15,-80 q45,-50 95,0' fill='none' stroke='%23000' stroke-width='5' stroke-linecap='round'/>
+               <rect x='160' y='110' width='38' height='24' rx='4' fill='none' stroke='%23000' stroke-width='5'/>
+               <rect x='200' y='110' width='38' height='24' rx='4' fill='none' stroke='%23000' stroke-width='5'/>
+               <rect x='199' y='118' width='2' height='6' fill='%23000'/>
+               <circle cx='178' cy='140' r='5' fill='%23000'/>
+             </svg>">
+        <figcaption>“Profile Brule, artsy fartsy.”</figcaption>
+      </figure>
+
+      <figure>
+        <img class="spinning" width="160" height="160" alt="Gold star that says WOW in comic lettering"
+             src="data:image/svg+xml;utf8,
+             <svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'>
+               <defs><radialGradient id='gl' cx='50%' cy='50%'><stop offset='0%' stop-color='%23fff'/><stop offset='100%' stop-color='%23ffd45e'/></radialGradient></defs>
+               <rect width='100%' height='100%' fill='%230a0020'/>
+               <polygon points='80,10 95,55 145,55 105,85 120,130 80,105 40,130 55,85 15,55 65,55' fill='url(%23gl)' stroke='%23ff00ea' stroke-width='3'/>
+               <text x='80' y='90' text-anchor='middle' font-size='26' fill='%23000' font-weight='900'>WOW</text>
+             </svg>">
+        <figcaption>“GeoCities-approved ✨ stink certified.”</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- WCAG SECTIONS: A & AA ONLY (longer + salty) -->
+  <div class="grid">
+
+    <!-- LEVEL A -->
+    <section id="level-a" aria-labelledby="h-a">
+      <h2><span class="lvl">A</span> <span id="h-a">Level A — bare minimum (put pants on, champ)</span></h2>
+      <ul class="sc">
+
+        <li class="sc-item"><details open>
+          <summary class="hdr"><span><span class="code">2.1.1</span> Keyboard — no mouse Olympics, jabroni</span></summary>
+          <div class="explain">
+            Everything must be operable with a keyboard alone: all controls, dialogs, menus, and media. If your UI needs a mouse wiggle or secret hover magic, you’re cookin’ up exclusion stew. Provide visible focus, sane tab order, and shortcuts that don’t punch screen reader users in the beans.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.1.2</span> No Keyboard Trap — don’t lock me in the porta-potty</span></summary>
+          <div class="explain">
+            Users must be able to move focus into AND out of components using only the keyboard. Modals, carousels, custom dropdowns—trap-free zones. Provide an obvious escape (Esc or a close button) and send focus back where it came from like a polite little boomerang.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.1.4</span> One-Key Shortcuts — stop detonating actions with random letters</span></summary>
+          <div class="explain">
+            Single-character shortcuts can collide with assistive tech. Let users turn ‘em off, change ‘em, or require a modifier (like Alt/Opt). Nobody wants to fat-finger “S” and ship a burrito to Guam.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.2.1</span> Timing Adjustable — timers ain’t a footrace</span></summary>
+          <div class="explain">
+            If there’s a time limit, provide a way to turn it off, extend it (at least 10x), or pause it. Give warnings before booting people and preserve any entered data. People read at different speeds; don’t make comprehension a game show buzzer.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.2.2</span> Pause / Stop / Hide — tame the blinkies</span></summary>
+          <div class="explain">
+            Moving, blinking, auto-updating content needs user controls. Provide a Pause and don’t restart it like a haunted GIF. Carousels: give play/pause, previous/next, and ensure the motion doesn’t hijack focus like a rowdy raccoon.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.3.1</span> Three Flashes or Below — this ain’t a rave</span></summary>
+          <div class="explain">
+            Avoid content flashing more than 3 times per second in the same region. When in doubt, just don’t flash stuff. Be kind to brains; save the strobes for your basement disco.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.4.1–2.4.4</span> Basic Navigation — no mystery meat, label your dang stuff</span></summary>
+          <div class="explain">
+            Provide skip links to bypass repetitive blocks; use clear, descriptive page titles; keep a logical focus order that follows the visual layout; and ensure link purpose is clear from its text or nearby context. “Click here” is about as helpful as a screen door on a submarine.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.1</span> Pointer Gestures — spare me the ninja finger ballet</span></summary>
+          <div class="explain">
+            Multi-pointer, path-based, or precision gestures must have a simple alternative (tap/click). Don’t force twisty two-finger salsa when a single button would do. Big thumbs deserve love, too.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.2</span> Pointer Cancellation — fire on release, save my bacon</span></summary>
+          <div class="explain">
+            Trigger actions on up, not down, so folks can bail out if they mis-tap. Add an easy undo or confirmation for spicy actions (delete/buy/launch-rocket) so accidents don’t turn into burrito disasters.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.3</span> Label in Name — say the words you show</span></summary>
+          <div class="explain">
+            The accessible name should include the visible text of the control. If the button says “Buy Beans,” a screen reader should not announce “Button 42.” Keep speech and sight in harmony like a barbershop quartet of toots.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.4</span> Motion Actuation — no shake-to-do-stuff baloney</span></summary>
+          <div class="explain">
+            If actions can be triggered by device motion (shake, tilt), users must be able to do the same thing with a regular control, and they must be able to disable the motion trigger. Phones get jostled; don’t make ‘em accidental feature cannons.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">3.2.6</span> Consistent Help — stop hiding the help like a fart in church</span></summary>
+          <div class="explain">
+            If pages in a process provide help options (contact, chat, FAQs), keep them in a consistent location and format across those pages. Users shouldn’t have to play Whac-A-Mole just to ask a dang question.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">3.3.7</span> Redundant Entry — don’t make me retype my life story</span></summary>
+          <div class="explain">
+            Reuse previously entered data within the same session or provide autofill. If you already know my address, don’t make me type it five times like a penitent bean sinner.
+          </div>
+        </details></li>
+
+      </ul>
+      <p class="foot">Level A = “don’t totally suck.”</p>
+    </section>
+
+    <!-- LEVEL AA -->
+    <section id="level-aa" aria-labelledby="h-aa">
+      <h2><span class="lvl aa">AA</span> <span id="h-aa">Level AA — be decent, ya turd</span></h2>
+      <ul class="sc">
+
+        <li class="sc-item"><details open>
+          <summary class="hdr"><span><span class="code">2.4.5</span> Multiple Ways — give me options, not a maze</span></summary>
+          <div class="explain">
+            Provide at least two ways to locate a page (search, site map, breadcrumby nav). Don’t strand users inside a labyrinth of dropdowns like Theseus without his thread (or his beans).
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.4.6</span> Headings & Labels — say what the dang thing is</span></summary>
+          <div class="explain">
+            Use clear, descriptive headings and labels that match the purpose of the content or control. “Payment” beats “Stuff Area.” Avoid cute cryptic nonsense unless you’re labeling a jar of mystery pickles.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.4.7</span> Focus Visible — show me the ring, onion boy</span></summary>
+          <div class="explain">
+            The component with keyboard focus must be visually obvious at all times. Use a strong outline/underline/background change with good color contrast. Don’t hide it behind sticky bars or low-contrast whispers.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.4.11</span> Focus Not Obscured (Min) — no sticky-header photobombs</span></summary>
+          <div class="explain">
+            When something receives focus, at least some of it must stay visible in the viewport. If you’ve got fixed headers/footers/sidecars, make your page scroll just enough to reveal the target instead of smothering it.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.6</span> Concurrent Inputs — mouse + keys can be friends</span></summary>
+          <div class="explain">
+            Let users switch between input methods without breaking the interface. Touch shouldn’t disable keyboard; voice shouldn’t kill the mouse. All our little input buddies can share the sandbox (no poopin’ in it).
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.7</span> Dragging Movements — give me a button, surgeon</span></summary>
+          <div class="explain">
+            If a task requires dragging (sliders, sortables, maps), also provide a non-drag option like “Move Up/Down” buttons or numeric inputs. Dragging is hard with tremors, trackpads, or meatball thumbs.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">2.5.8</span> Target Size (Min) — no ant-butt buttons</span></summary>
+          <div class="explain">
+            Make interactive targets large enough and/or spaced enough to avoid accidental hits (think at least ~24px CSS square or generous spacing). Exceptions exist, but the spirit is: don’t make people pixel-hunt like a raccoon looking for beans in the dark.
+          </div>
+        </details></li>
+
+        <li class="sc-item"><details>
+          <summary class="hdr"><span><span class="code">3.3.8</span> Accessible Auth (Min) — let my brain rest</span></summary>
+          <div class="explain">
+            Logins must not require cognitive memory stunts like recalling obscured passwords without copy/paste or solving “find the garlic bread” puzzles. Support password managers, show-password toggles, and copyable codes. Save the riddles for Dungeons & Dragons night.
+          </div>
+        </details></li>
+
+      </ul>
+      <p class="foot">Level AA = “be decent, ya turd.”</p>
+    </section>
+
+  </div>
+
+  <!-- ✍️ GUESTBOOK -->
+  <section id="guestbook" class="guestbook" aria-labelledby="h-gb" style="margin-top:1rem">
+    <h2 id="h-gb">Guestbook ✍️ — leave a note, ya dingus</h2>
+    <div class="gb-form" role="form" aria-describedby="gb-help">
+      <p id="gb-help" class="hint">Your entry is saved in your browser (localStorage). Keep it classy-ish. No doxxing, no stink crimes.</p>
+
+      <div class="gb-row inline">
+        <div>
+          <label for="gb-name">Name (required)</label>
+          <input id="gb-name" name="name" type="text" autocomplete="name" required placeholder="Dr. Brule, Bean King" />
+        </div>
+        <div>
+          <label for="gb-rule">Favorite WCAG bit (optional)</label>
+          <select id="gb-rule" name="rule">
+            <option value="">— pick one if ya want —</option>
+            <option>2.1.1 Keyboard</option>
+            <option>2.4.7 Focus Visible</option>
+            <option>2.5.8 Target Size</option>
+            <option>3.3.8 Accessible Auth</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="gb-row">
+        <label for="gb-msg">Message (keep it helpful, ya turkey)</label>
+        <textarea id="gb-msg" name="message" rows="4" placeholder="Your note…"></textarea>
+      </div>
+
+      <div class="gb-row inline">
+        <div>
+          <label for="gb-stars">Rating (how tasty was this site?)</label>
+          <select id="gb-stars" name="stars" aria-label="Star rating">
+            <option value="5">★★★★★ (chef’s kiss)</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+          </select>
+        </div>
+        <div>
+          <label><input id="gb-toots" type="checkbox" /> Add a celebratory toot when I post</label>
+        </div>
+      </div>
+
+      <div class="gb-actions">
+        <button class="btn" id="gb-submit" type="button">✍️ Sign Guestbook</button>
+        <button class="btn" id="gb-clear" type="button">🧹 Clear All (local)</button>
+        <button class="btn" id="gb-export" type="button">💾 Export JSON</button>
+        <label class="btn" for="gb-import-input" style="cursor:pointer">📥 Import JSON</label>
+        <input id="gb-import-input" type="file" accept="application/json" class="sr-only" />
+        <span id="gb-status" class="hint" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <hr aria-hidden="true" />
+    <div id="gb-list" class="gb-entries" aria-live="polite" aria-busy="false"></div>
+  </section>
+
+  <section id="sources" style="margin-top:1rem">
+    <h2>Sources &amp; further reading 📚</h2>
+    <ul>
+      <li>W3C — Web Content Accessibility Guidelines (WCAG) 2.2</li>
+      <li>WAI — What’s New in WCAG 2.2</li>
+      <li>Explainery pals: WebAIM; TPGi; Deque; Stark</li>
+    </ul>
+    <div class="under">
+      <img alt="Under construction barricade" width="160" height="40"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40'><rect width='160' height='40' fill='%23ffcc00'/><g fill='%23000'><rect x='0' y='0' width='20' height='10'/><rect x='20' y='10' width='20' height='10'/><rect x='40' y='0' width='20' height='10'/><rect x='60' y='10' width='20' height='10'/><rect x='80' y='0' width='20' height='10'/><rect x='100' y='10' width='20' height='10'/><rect x='120' y='0' width='20' height='10'/><rect x='140' y='10' width='20' height='10'/></g><text x='80' y='30' text-anchor='middle' font-size='14' fill='%23000' font-weight='700'>UNDER CONSTRUCTION</text></svg>">
+      <span class="hint">Hit counter:</span> <span class="counter" aria-label="Totally real hit counter" id="counter">000001</span>
+    </div>
+  </section>
+
+  <p class="foot" style="text-align:center;margin-top:1rem">Made with 💖, beans, and better focus outlines. Sign the book, wash your hands.</p>
+</main>
+
+<div class="wrap" style="text-align:center;margin-bottom:2rem">
+  <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">⬆️ Back to top</a>
+</div>
+
+<script>
+  // Goofy & Calm modes
+  const goof = document.getElementById('goof');
+  const calm  = document.getElementById('calm');
+  const body  = document.body;
+  goof?.addEventListener('change', ()=> body.classList.toggle('goof', goof.checked));
+  calm?.addEventListener('change', ()=> body.classList.toggle('calm', calm.checked));
+
+  // Fake hit counter
+  window.addEventListener('load', () => {
+    try{
+      const key='counterHits';
+      const n = (parseInt(localStorage.getItem(key)||'1',10)+Math.floor(Math.random()*3));
+      localStorage.setItem(key, String(n));
+      const el=document.getElementById('counter'); if(el){ el.textContent = String(n).padStart(6,'0'); }
+    }catch(_){}
+  });
+
+  // ===== TOOT ENGINE (with intensity) =====
+  const fartStatus = document.getElementById('fartStatus');
+  const tootOnClick = document.getElementById('tootOnClick');
+  const tootOnDisclosure = document.getElementById('tootOnDisclosure');
+  const testPlay = document.getElementById('fartPlay');
+  const stopBtn  = document.getElementById('fartStop');
+  const vol = document.getElementById('tootVolume');
+  const intensity = document.getElementById('tootIntensity');
+  const intensityLabel = document.getElementById('intensityLabel');
+
+  const sfx = [
+    document.getElementById('sfx1'),
+    document.getElementById('sfx2'),
+    document.getElementById('sfx3')
+  ];
+
+  const say = (m)=> { if(fartStatus) fartStatus.textContent = m };
+
+  // volume
+  function setVol(v){ sfx.forEach(a => { try{ a.volume = v; }catch(_){} }); }
+  setVol(parseFloat(vol?.value || '0.6'));
+  vol?.addEventListener('input', ()=> setVol(parseFloat(vol.value)));
+
+  // intensity label
+  function updateIntensityLabel(){
+    const val = parseInt(intensity.value, 10);
+    intensityLabel.textContent = val === 1 ? 'Intensity: Mild 🫘' : (val === 2 ? 'Intensity: Medium 🌶️' : 'Intensity: Chili Night 🔥🌶️🌶️');
+  }
+  updateIntensityLabel();
+  intensity?.addEventListener('input', updateIntensityLabel);
+
+  // random toot with debounce + intensity behavior
+  let lastToot = 0;
+  function playOneToot(){
+    const a = sfx[Math.floor(Math.random()*sfx.length)];
+    try { a.currentTime = 0; a.play(); } catch(e){}
+  }
+  function playRandomToot(){
+    const now = Date.now();
+    if(now - lastToot < 200) return; // debounce
+    lastToot = now;
+
+    const lvl = parseInt(intensity.value || '2', 10);
+    const baseVol = parseFloat(vol.value || '0.6');
+    setVol(Math.min(1, baseVol * (lvl === 1 ? 0.8 : lvl === 2 ? 1.0 : 1.15)));
+
+    if(lvl === 1){
+      playOneToot(); say('💨 pfft (mild)');
+    }else if(lvl === 2){
+      playOneToot(); if(Math.random() < 0.25){ setTimeout(playOneToot, 140); } say('💨 toot!');
+    }else{
+      playOneToot(); setTimeout(playOneToot, 130 + Math.random()*120);
+      if(Math.random() < 0.6){ setTimeout(playOneToot, 260 + Math.random()*150); }
+      say('🔥🌶️ TOOT STORM!');
+    }
+  }
+
+  // Click-to-toot (links & buttons)
+  document.addEventListener('click', (e)=>{
+    if(!tootOnClick?.checked) return;
+    const t = e.target;
+    const isLink   = t.closest && t.closest('a');
+    const isButton = t.closest && t.closest('button');
+    if(isLink || isButton){ playRandomToot(); }
+  }, true);
+
+  // Disclosure-to-toot — fires on open AND close
+  function wireDisclosures(){
+    document.querySelectorAll('details').forEach(d=>{
+      d.addEventListener('toggle', ()=>{
+        if(tootOnDisclosure?.checked){ playRandomToot(); }
+      });
+    });
+  }
+  wireDisclosures();
+
+  testPlay?.addEventListener('click', (e)=> { e.preventDefault(); playRandomToot(); });
+  stopBtn?.addEventListener('click', (e)=> {
+    e.preventDefault();
+    sfx.forEach(a=>{ try{ a.pause(); a.currentTime=0; }catch(_){} });
+    say('⛔ toot stopped');
+  });
+
+  document.addEventListener('visibilitychange', ()=> {
+    if(document.hidden){ sfx.forEach(a=>{ try{ a.pause(); }catch(_){} }); }
+  });
+
+  // ===== GUESTBOOK (localStorage) =====
+  const GB_KEY = 'geocitiesGuestbookV1';
+  const gbList = document.getElementById('gb-list');
+  const gbStatus = document.getElementById('gb-status');
+  const gbName = document.getElementById('gb-name');
+  const gbMsg = document.getElementById('gb-msg');
+  const gbRule = document.getElementById('gb-rule');
+  const gbStars = document.getElementById('gb-stars');
+  const gbToots = document.getElementById('gb-toots');
+  const gbSubmit = document.getElementById('gb-submit');
+  const gbClear = document.getElementById('gb-clear');
+  const gbExport = document.getElementById('gb-export');
+  const gbImportInput = document.getElementById('gb-import-input');
+
+  function escapeHTML(str=''){
+    return str.replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+  }
+
+  function loadEntries(){
+    try{
+      const raw = localStorage.getItem(GB_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(_){ return []; }
+  }
+  function saveEntries(entries){
+    try{ localStorage.setItem(GB_KEY, JSON.stringify(entries)); }catch(_){}
+  }
+
+  function starString(n){
+    n = Math.max(1, Math.min(5, parseInt(n||'5',10)));
+    return '★'.repeat(n) + '☆'.repeat(5-n);
+  }
+
+  function renderEntries(){
+    const entries = loadEntries().slice().reverse(); // newest first
+    gbList.setAttribute('aria-busy','true');
+    gbList.innerHTML = '';
+    if(entries.length === 0){
+      const div = document.createElement('div');
+      div.className = 'gb-card muter';
+      div.textContent = 'No entries yet. Be the first bean hero!';
+      gbList.appendChild(div);
+    }else{
+      for(const e of entries){
+        const card = document.createElement('article');
+        card.className = 'gb-card';
+        const meta = document.createElement('div');
+        meta.className = 'gb-meta';
+        const date = new Date(e.ts || Date.now());
+        meta.innerHTML = `<span><strong>${escapeHTML(e.name)}</strong></span>
+                          <span class="stars" aria-label="${e.stars} out of 5 stars">${starString(e.stars)}</span>
+                          <span>•</span>
+                          <span>${date.toLocaleString()}</span>
+                          ${e.rule ? `<span>• Fav: ${escapeHTML(e.rule)}</span>` : ''}`;
+        const msg = document.createElement('p');
+        msg.innerHTML = escapeHTML(e.message || '').replace(/\n/g,'<br>');
+        card.appendChild(meta);
+        card.appendChild(msg);
+        gbList.appendChild(card);
+      }
+    }
+    gbList.removeAttribute('aria-busy');
+  }
+
+  function rateLimitOK(){
+    try{
+      const last = parseInt(sessionStorage.getItem('gb-last')||'0',10);
+      const now = Date.now();
+      if(now - last < 5000){ return false; } // 5s
+      sessionStorage.setItem('gb-last', String(now));
+      return true;
+    }catch(_){ return true; }
+  }
+
+  gbSubmit?.addEventListener('click', ()=>{
+    const name = (gbName.value||'').trim();
+    const message = (gbMsg.value||'').trim();
+    const rule = gbRule.value;
+    const stars = gbStars.value;
+
+    if(!name){ gbStatus.textContent = 'Name is required, my dude.'; gbName.focus(); return; }
+    if(message.length < 2){ gbStatus.textContent = 'Write a lil’ message, even a “hi beans.”'; gbMsg.focus(); return; }
+    if(message.length > 2000){ gbStatus.textContent = 'Whoa novelist — keep it under 2000 chars.'; gbMsg.focus(); return; }
+    if(!rateLimitOK()){ gbStatus.textContent = 'Cool your jets — try again in a few seconds.'; return; }
+
+    const entries = loadEntries();
+    const entry = { name, message, rule, stars, ts: Date.now() };
+    entries.push(entry);
+    saveEntries(entries);
+    renderEntries();
+    gbStatus.textContent = 'Signed! Your wisdom is etched into the bean-scrolls.';
+    gbMsg.value = '';
+    if(gbToots.checked){ playRandomToot(); }
+  });
+
+  gbClear?.addEventListener('click', ()=>{
+    if(confirm('Clear ALL guestbook entries on this device? This can’t be undone.')){
+      saveEntries([]); renderEntries(); gbStatus.textContent = 'Guestbook cleared (local only).';
+    }
+  });
+
+  gbExport?.addEventListener('click', ()=>{
+    const data = JSON.stringify(loadEntries(), null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'guestbook.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    gbStatus.textContent = 'Exported guestbook as JSON.';
+  });
+
+  gbImportInput?.addEventListener('change', async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if(!Array.isArray(data)) throw new Error('Bad format');
+      saveEntries(data); renderEntries(); gbStatus.textContent = 'Imported entries. Welcome back, beanlord.';
+    }catch(err){
+      gbStatus.textContent = 'Import failed. JSON might be funky.';
+    }finally{
+      e.target.value = '';
+    }
+  });
+
+  // initial render
+  renderEntries();
+</script>
+</body>
+</html>
