@@ -450,6 +450,11 @@
   <a class="btn" href="#top" id="back-to-top" aria-label="Back to top">⬆️ Back to top</a>
 </div>
 
+<script>
+  if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+    window.GUESTBOOK_API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+  }
+</script>
 <script src="scripts.js" defer></script>
 </body>
 </html>

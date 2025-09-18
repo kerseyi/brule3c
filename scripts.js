@@ -103,7 +103,15 @@ document.addEventListener('visibilitychange', ()=> {
 });
 
 // ===== GUESTBOOK =====
-const API_URL = '/api/guestbook';
+const API_URL = (() => {
+  if (typeof window !== 'undefined' && window.GUESTBOOK_API_URL) {
+    return window.GUESTBOOK_API_URL;
+  }
+  if (typeof window !== 'undefined' && ['localhost','127.0.0.1'].includes(window.location.hostname)) {
+    return '/api/guestbook';
+  }
+  return 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+})();
 const gbList = document.getElementById('gb-list');
 const gbStatus = document.getElementById('gb-status');
 const gbName = document.getElementById('gb-name');
@@ -235,7 +243,8 @@ async function fetchEntries(options = {}) {
       data = null;
     }
 
-    if (!response.ok) {
+    const failed = (!response.ok) || (data && data.ok === false);
+    if (failed) {
       const message = data && data.error ? data.error : `Server responded with ${response.status}`;
       throw new Error(message);
     }
@@ -311,7 +320,7 @@ gbSubmit?.addEventListener('click', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain;charset=UTF-8',
         'Accept': 'application/json'
       },
       body: JSON.stringify({ name, message, rule, stars })
@@ -324,14 +333,20 @@ gbSubmit?.addEventListener('click', async () => {
       data = null;
     }
 
-    if (!response.ok) {
+    const failed = (!response.ok) || (data && data.ok === false);
+    if (failed) {
       const msg = data && data.error ? data.error : 'Failed to sign the guestbook.';
       setStatus(msg, 'error');
       return;
     }
 
-    upsertEntry(data && data.entry ? data.entry : null);
-    renderEntries();
+    const entry = data && data.entry ? data.entry : null;
+    if (entry) {
+      upsertEntry(entry);
+      renderEntries();
+    } else {
+      await fetchEntries({ silent: true });
+    }
     setStatus('Signed! Your wisdom is etched into the bean-scrolls.', 'success');
     if (gbMsg) gbMsg.value = '';
     if (gbToots?.checked) {
