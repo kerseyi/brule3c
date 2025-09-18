@@ -378,7 +378,7 @@
   <section id="guestbook" class="guestbook" aria-labelledby="h-gb" style="margin-top:1rem">
     <h2 id="h-gb">Guestbook ✍️ — leave a note, ya dingus</h2>
     <div class="gb-form" role="form" aria-describedby="gb-help">
-      <p id="gb-help" class="hint">Your entry is saved in your browser (localStorage). Keep it classy-ish. No doxxing, no stink crimes.</p>
+      <p id="gb-help" class="hint">Entries live on the shared bean server (no login needed). Newest notes bubble to the top.</p>
 
       <div class="gb-row inline">
         <div>
@@ -419,17 +419,14 @@
       </div>
 
       <div class="gb-actions">
-        <button class="btn" id="gb-submit" type="button">✍️ Sign Guestbook</button>
-        <button class="btn" id="gb-clear" type="button">🧹 Clear All (local)</button>
-        <button class="btn" id="gb-export" type="button">💾 Export JSON</button>
-        <label class="btn" for="gb-import-input" style="cursor:pointer">📥 Import JSON</label>
-        <input id="gb-import-input" type="file" accept="application/json" class="sr-only" />
-        <span id="gb-status" class="hint" role="status" aria-live="polite"></span>
+        <button class="btn" id="gb-submit" type="button">Sign Guestbook</button>
+        <button class="btn" id="gb-refresh" type="button">Refresh entries</button>
+        <span id="gb-status" class="hint" role="status" aria-live="polite">Loading bean scribbles...</span>
       </div>
     </div>
 
     <hr aria-hidden="true" />
-    <div id="gb-list" class="gb-entries" aria-live="polite" aria-busy="false"></div>
+    <div id="gb-list" class="gb-entries" aria-live="polite" aria-busy="true"></div>
   </section>
 
   <section id="sources" style="margin-top:1rem">

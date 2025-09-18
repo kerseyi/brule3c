@@ -102,8 +102,8 @@ document.addEventListener('visibilitychange', ()=> {
   if(document.hidden){ sfx.forEach(a=>{ try{ a.pause(); }catch(_){} }); }
 });
 
-// ===== GUESTBOOK (localStorage) =====
-const GB_KEY = 'geocitiesGuestbookV1';
+// ===== GUESTBOOK =====
+const API_URL = '/api/guestbook';
 const gbList = document.getElementById('gb-list');
 const gbStatus = document.getElementById('gb-status');
 const gbName = document.getElementById('gb-name');
@@ -112,128 +112,251 @@ const gbRule = document.getElementById('gb-rule');
 const gbStars = document.getElementById('gb-stars');
 const gbToots = document.getElementById('gb-toots');
 const gbSubmit = document.getElementById('gb-submit');
-const gbClear = document.getElementById('gb-clear');
-const gbExport = document.getElementById('gb-export');
-const gbImportInput = document.getElementById('gb-import-input');
+const gbRefresh = document.getElementById('gb-refresh');
 
-function escapeHTML(str=''){
-  return str.replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+const gbState = {
+  entries: [],
+  loading: false
+};
+
+function escapeHTML(str = '') {
+  return str.replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
+  })[ch]);
 }
 
-function loadEntries(){
-  try{
-    const raw = localStorage.getItem(GB_KEY);
-    return raw ? JSON.parse(raw) : [];
-  }catch(_){ return []; }
-}
-function saveEntries(entries){
-  try{ localStorage.setItem(GB_KEY, JSON.stringify(entries)); }catch(_){}
+function starString(value) {
+  const n = Math.max(1, Math.min(5, parseInt(value || '5', 10)));
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
 }
 
-function starString(n){
-  n = Math.max(1, Math.min(5, parseInt(n||'5',10)));
-  return '★'.repeat(n) + '☆'.repeat(5-n);
+function setStatus(message, tone = 'info') {
+  if (!gbStatus) return;
+  gbStatus.textContent = message;
+  gbStatus.classList.remove('is-info', 'is-success', 'is-error', 'is-progress');
+  let className = 'is-info';
+  if (tone === 'success') className = 'is-success';
+  else if (tone === 'error') className = 'is-error';
+  else if (tone === 'progress') className = 'is-progress';
+  gbStatus.classList.add(className);
 }
 
-function renderEntries(){
-  const entries = loadEntries().slice().reverse(); // newest first
-  gbList.setAttribute('aria-busy','true');
+function renderEmpty(message) {
+  if (!gbList) return;
+  gbList.setAttribute('aria-busy', 'false');
   gbList.innerHTML = '';
-  if(entries.length === 0){
-    const div = document.createElement('div');
-    div.className = 'gb-card muter';
-    div.textContent = 'No entries yet. Be the first bean hero!';
-    gbList.appendChild(div);
-  }else{
-    for(const e of entries){
-      const card = document.createElement('article');
-      card.className = 'gb-card';
-      const meta = document.createElement('div');
-      meta.className = 'gb-meta';
-      const date = new Date(e.ts || Date.now());
-      meta.innerHTML = `<span><strong>${escapeHTML(e.name)}</strong></span>
-                        <span class="stars" aria-label="${e.stars} out of 5 stars">${starString(e.stars)}</span>
+  const div = document.createElement('div');
+  div.className = 'gb-card muter';
+  div.textContent = message;
+  gbList.appendChild(div);
+}
+
+function renderLoading(message) {
+  if (!gbList) return;
+  gbList.setAttribute('aria-busy', 'true');
+  gbList.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'gb-loading';
+  div.textContent = message || 'Loading bean scribbles...';
+  gbList.appendChild(div);
+}
+
+function renderEntries(entries = gbState.entries) {
+  if (!gbList) return;
+  const sorted = entries.slice().sort((a, b) => ((b && b.ts) || 0) - ((a && a.ts) || 0));
+  if (!sorted.length) {
+    renderEmpty('No entries yet. Be the first bean hero!');
+    return;
+  }
+
+  gbList.innerHTML = '';
+  for (const entry of sorted) {
+    const ratingSource = entry && entry.stars != null ? entry.stars : '5';
+    const rating = Math.max(1, Math.min(5, parseInt(ratingSource, 10)));
+    const card = document.createElement('article');
+    card.className = 'gb-card';
+    const meta = document.createElement('div');
+    meta.className = 'gb-meta';
+    const date = new Date(entry && entry.ts ? entry.ts : Date.now());
+    meta.innerHTML = `<span><strong>${escapeHTML(entry && entry.name ? entry.name : 'Anonymous Bean')}</strong></span>
+                        <span class="stars" aria-label="${rating} out of 5 stars">${starString(rating)}</span>
                         <span>•</span>
                         <span>${date.toLocaleString()}</span>
-                        ${e.rule ? `<span>• Fav: ${escapeHTML(e.rule)}</span>` : ''}`;
-      const msg = document.createElement('p');
-      msg.innerHTML = escapeHTML(e.message || '').replace(/\n/g,'<br>');
-      card.appendChild(meta);
-      card.appendChild(msg);
-      gbList.appendChild(card);
-    }
+                        ${entry && entry.rule ? `<span>Fav: ${escapeHTML(entry.rule)}</span>` : ''}`;
+    const msg = document.createElement('p');
+    msg.innerHTML = escapeHTML(entry && entry.message ? entry.message : '').replace(/\n/g, '<br>');
+    card.appendChild(meta);
+    card.appendChild(msg);
+    gbList.appendChild(card);
   }
-  gbList.removeAttribute('aria-busy');
+  gbList.setAttribute('aria-busy', 'false');
 }
 
-function rateLimitOK(){
-  try{
-    const last = parseInt(sessionStorage.getItem('gb-last')||'0',10);
+function rateLimitOK() {
+  try {
+    const last = parseInt(sessionStorage.getItem('gb-last') || '0', 10);
     const now = Date.now();
-    if(now - last < 5000){ return false; } // 5s
+    if (now - last < 5000) return false;
     sessionStorage.setItem('gb-last', String(now));
     return true;
-  }catch(_){ return true; }
+  } catch (_) {
+    return true;
+  }
 }
 
-gbSubmit?.addEventListener('click', ()=>{
-  const name = (gbName.value||'').trim();
-  const message = (gbMsg.value||'').trim();
-  const rule = gbRule.value;
-  const stars = gbStars.value;
+async function fetchEntries(options = {}) {
+  const { initial = false, silent = false } = options;
+  if (gbState.loading) return;
+  gbState.loading = true;
+  if (gbRefresh) gbRefresh.disabled = true;
 
-  if(!name){ gbStatus.textContent = 'Name is required, my dude.'; gbName.focus(); return; }
-  if(message.length < 2){ gbStatus.textContent = 'Write a lil’ message, even a “hi beans.”'; gbMsg.focus(); return; }
-  if(message.length > 2000){ gbStatus.textContent = 'Whoa novelist — keep it under 2000 chars.'; gbMsg.focus(); return; }
-  if(!rateLimitOK()){ gbStatus.textContent = 'Cool your jets — try again in a few seconds.'; return; }
+  if (initial || (!gbState.entries.length && !silent)) {
+    renderLoading('Loading bean scribbles...');
+  } else if (!silent && gbList) {
+    gbList.setAttribute('aria-busy', 'true');
+  }
 
-  const entries = loadEntries();
-  const entry = { name, message, rule, stars, ts: Date.now() };
-  entries.push(entry);
-  saveEntries(entries);
-  renderEntries();
-  gbStatus.textContent = 'Signed! Your wisdom is etched into the bean-scrolls.';
-  gbMsg.value = '';
-  if(gbToots.checked){ playRandomToot(); }
-});
+  if (initial) {
+    setStatus('Loading bean scribbles from the ether...', 'progress');
+  } else if (!silent) {
+    setStatus('Refreshing guestbook...', 'progress');
+  }
 
-gbClear?.addEventListener('click', ()=>{
-  if(confirm('Clear ALL guestbook entries on this device? This can’t be undone.')){
-    saveEntries([]); renderEntries(); gbStatus.textContent = 'Guestbook cleared (local only).';
+  try {
+    const response = await fetch(API_URL, { headers: { 'Accept': 'application/json' } });
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (_) {
+      data = null;
+    }
+
+    if (!response.ok) {
+      const message = data && data.error ? data.error : `Server responded with ${response.status}`;
+      throw new Error(message);
+    }
+
+    const entries = Array.isArray(data && data.entries) ? data.entries : [];
+    gbState.entries = entries;
+    renderEntries(entries);
+    if (!silent) {
+      if (entries.length) {
+        setStatus(`Loaded ${entries.length} bean scribbles.`, 'success');
+      } else {
+        setStatus('No entries yet. Be the first bean hero!', 'info');
+      }
+    }
+  } catch (err) {
+    console.error('Guestbook load failed', err);
+    if (!gbState.entries.length) {
+      renderEmpty('Could not load entries. Beans might be stuck in the pneumatic tube.');
+    }
+    if (!silent) {
+      const extra = err && err.message ? ` ${err.message}` : ' Beans might be stuck in the pneumatic tube.';
+      setStatus(`Failed to load entries.${extra}`, 'error');
+    }
+  } finally {
+    gbState.loading = false;
+    if (gbRefresh) gbRefresh.disabled = false;
+  }
+}
+
+function upsertEntry(entry) {
+  if (!entry) return;
+  const idx = gbState.entries.findIndex(item => item && item.id === entry.id);
+  if (idx >= 0) {
+    gbState.entries[idx] = entry;
+  } else {
+    gbState.entries.push(entry);
+  }
+}
+
+gbSubmit?.addEventListener('click', async () => {
+  const name = (gbName?.value || '').trim();
+  const message = (gbMsg?.value || '').trim();
+  const rule = (gbRule?.value || '').trim();
+  const stars = parseInt(gbStars?.value || '5', 10);
+
+  if (!name) {
+    setStatus('Name is required, my dude.', 'error');
+    gbName?.focus();
+    return;
+  }
+  if (message.length < 2) {
+    setStatus('Write a lil\' message, even a "hi beans."', 'error');
+    gbMsg?.focus();
+    return;
+  }
+  if (message.length > 2000) {
+    setStatus('Whoa novelist - keep it under 2000 chars.', 'error');
+    gbMsg?.focus();
+    return;
+  }
+  if (!rateLimitOK()) {
+    setStatus('Cool your jets - try again in a few seconds.', 'error');
+    return;
+  }
+
+  setStatus('Saving your bean wisdom...', 'progress');
+  if (gbSubmit) {
+    gbSubmit.disabled = true;
+    gbSubmit.setAttribute('aria-disabled', 'true');
+  }
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ name, message, rule, stars })
+    });
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (_) {
+      data = null;
+    }
+
+    if (!response.ok) {
+      const msg = data && data.error ? data.error : 'Failed to sign the guestbook.';
+      setStatus(msg, 'error');
+      return;
+    }
+
+    upsertEntry(data && data.entry ? data.entry : null);
+    renderEntries();
+    setStatus('Signed! Your wisdom is etched into the bean-scrolls.', 'success');
+    if (gbMsg) gbMsg.value = '';
+    if (gbToots?.checked) {
+      playRandomToot();
+    }
+  } catch (err) {
+    console.error('Guestbook submit failed', err);
+    setStatus('Failed to sign the guestbook. The intertubes are clogged.', 'error');
+  } finally {
+    if (gbSubmit) {
+      gbSubmit.disabled = false;
+      gbSubmit.removeAttribute('aria-disabled');
+    }
   }
 });
 
-gbExport?.addEventListener('click', ()=>{
-  const data = JSON.stringify(loadEntries(), null, 2);
-  const blob = new Blob([data], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'guestbook.json';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-  gbStatus.textContent = 'Exported guestbook as JSON.';
-});
-
-gbImportInput?.addEventListener('change', async (e)=>{
-  const file = e.target.files && e.target.files[0];
-  if(!file) return;
-  try{
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if(!Array.isArray(data)) throw new Error('Bad format');
-    saveEntries(data); renderEntries(); gbStatus.textContent = 'Imported entries. Welcome back, beanlord.';
-  }catch(err){
-    gbStatus.textContent = 'Import failed. JSON might be funky.';
-  }finally{
-    e.target.value = '';
-  }
+gbRefresh?.addEventListener('click', () => {
+  fetchEntries({ silent: false });
 });
 
 const backToTop = document.getElementById('back-to-top');
-backToTop?.addEventListener('click', (event)=>{
+backToTop?.addEventListener('click', event => {
   event.preventDefault();
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// initial render
-renderEntries();
+// Kick off initial load
+fetchEntries({ initial: true });

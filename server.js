@@ -251,8 +251,9 @@ async function handleApi(req, res, url) {
 }
 
 async function serveStatic(req, res, url) {
-  let filePath = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname.replace(/^\//, ''));
-  filePath = filePath.replace(/\/g, '/');
+  let filePath = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname);
+  while (filePath.startsWith('/')) { filePath = filePath.slice(1); }
+  filePath = filePath.split('\\').join('/');
   const resolved = path.normalize(path.join(PUBLIC_DIR, filePath));
 
   if (!resolved.startsWith(PUBLIC_DIR)) {
@@ -293,7 +294,8 @@ async function serveStatic(req, res, url) {
 
 const server = http.createServer(async (req, res) => {
   try {
-    const url = new URL(req.url, );
+    const origin = req.headers.host ? 'http://' + req.headers.host : 'http://localhost:' + PORT;
+    const url = new URL(req.url, origin);
 
     if (url.pathname.startsWith('/api/')) {
       await handleApi(req, res, url);
@@ -313,7 +315,7 @@ const server = http.createServer(async (req, res) => {
 ensureDataFile()
   .then(() => {
     server.listen(PORT, HOST, () => {
-      console.log();
+      console.log('Guestbook server listening on ' + HOST + ':' + PORT);
     });
   })
   .catch(err => {
@@ -325,3 +327,7 @@ process.on('SIGINT', () => {
   console.log('\nShutting down gracefully...');
   server.close(() => process.exit(0));
 });
+
+
+
+
